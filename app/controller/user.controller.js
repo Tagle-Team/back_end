@@ -9,15 +9,19 @@ exports.login = (req, res) => {
       });
     } else {
 
-      if (user.validPassword(req.body.password)) {
-        return res.status(201).send({
-          message: 'User Logged In'
-        })
-      } else {
+      if (!user.validPassword(req.body.password)) {
         return res.status(400).send({
           message: 'Wrong Password'
-        })
+        });
       }
+
+      const token = user.generateJWT();
+      res.header('auth-token', token).json({
+        error: null,
+        data: {
+          token
+        }
+      });
     }
   });
 };
