@@ -10,5 +10,6 @@ db.url = dbConfig.url;
 
 /* model */
 db.user = require('./user.model.js')(mongoose);
+db.tag = require('./tag.model.js')(mongoose);
 
 module.exports = db;

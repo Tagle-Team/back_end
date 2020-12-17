@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const usersRouter = require('./app/routes/user.routes');
+const tagsRouter = require('./app/routes/tag.routes')
 
 const app = express();
 
@@ -33,6 +34,7 @@ app.get('/', (req, res) => {
   res.json({ message: 'welcome to taggle.' });
 });
 app.use('/users', usersRouter);
+app.use('/tags', tagsRouter);
 
 // listen
 const PORT = process.env.PORT || 4500;
