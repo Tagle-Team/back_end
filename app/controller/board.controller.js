@@ -1,29 +1,29 @@
 const db = require('../models');
-const Tag = db.tag;
+const Board = db.board;
 const {generateExampleCards, getRandomEmoji} = require('../helpers');
 const shortid = require('shortid');
 
-exports.createTag = (req, res) => {
-  const newTag = new Tag();
-  newTag.title = req.body;
-  newTag.lists = [];
-  newTag.save((err, Tag) => {
+exports.createBoard = (req, res) => {
+  const newBoard = new Board();
+  newBoard.title = req.body;
+  newBoard.lists = [];
+  newBoard.save((err, Board) => {
     if (err) {
       return res.status(400).send({
-        message: 'Failed to add tag. (' + err + ')',
+        message: 'Failed to add board. (' + err + ')',
       });
     } else {
       return res.send({
-        message: 'Tag added successfully.',
+        message: 'Board added successfully.',
       });
     }
   });
 }
 
-exports.deleteTag = (req, res) => {
-  const { tagId } = req.body;
-  Tag.destroy({
-    where: { _id: tagId }
+exports.deleteBoard = (req, res) => {
+  const { boardId } = req.body;
+  Board.destroy({
+    where: { _id: boardId }
   })
     .then(result => {
       return res.send({
@@ -37,17 +37,17 @@ exports.deleteTag = (req, res) => {
     });
 }
 
-exports.reorderTag = (req, res) => {
+exports.reorderBoard = (req, res) => {
   const {listId, sourceId, sourceIndex, destinationIndex} = req.body;
 
-  Tag.findOneAndUpdate({
+  Board.findOneAndUpdate({
     _id: sourceId
   }, {
     $pull: {lists: {_id: listId}}
   })
     .then(result => {
       const list = result.lists[sourceIndex];
-      Tag.updateOne(
+      Board.updateOne(
         {_id: sourceId}
       ), {
         $push: {
@@ -66,35 +66,31 @@ exports.reorderTag = (req, res) => {
 
 exports.example = (req, res) => {
   const exampleCards = generateExampleCards();
-  const newTag = new Tag();
-  // newTag._id = shortid.generate();
-  newTag.title = `Example Tag ${getRandomEmoji()}`;
-  newTag.lists = [
+  const newBoard = new Board();
+  newBoard.title = `Example Board ${getRandomEmoji()}`;
+  newBoard.lists = [
     {
-      // _id: shortid.generate(),
       title: 'Todo',
       cards: exampleCards[0]
     },
     {
-      // _id: shortid.generate(),
       title: 'In Progress',
       cards: exampleCards[1]
     },
     {
-      // _id: shortid.generate(),
       title: 'Done',
       cards: exampleCards[2]
     }
   ];
 
-  newTag.save((err, Tag) => {
+  newBoard.save((err, Board) => {
     if (err) {
       return res.status(400).send({
-        message: 'Failed to add tag. (' + err + ')',
+        message: 'Failed to add board. (' + err + ')',
       });
     } else {
       return res.send({
-        message: 'Tag added successfully.',
+        message: 'Board added successfully.',
       });
     }
   });

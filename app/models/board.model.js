@@ -1,5 +1,5 @@
 module.exports = (mongoose) => {
-  let tagSchema = mongoose.Schema({
+  let boardSchema = mongoose.Schema({
     title: {
       type: String,
       trim: true,
@@ -21,13 +21,13 @@ module.exports = (mongoose) => {
     },
   });
 
-  tagSchema.method('toJSON', function () {
+  boardSchema.method('toJSON', function () {
     const { __v, _id, ...object } = this.toObject();
     object.id = _id;
     return object;
   });
 
-  const Tag = mongoose.model('Tag', tagSchema, 'Tag');
+  const Board = mongoose.model('Board', boardSchema, 'Board');
 
-  return Tag;
+  return Board;
 };

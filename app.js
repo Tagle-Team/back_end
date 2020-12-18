@@ -2,7 +2,9 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const usersRouter = require('./app/routes/user.routes');
-const tagsRouter = require('./app/routes/tag.routes')
+const boardRouter = require('./app/routes/board.routes');
+const listRouter = require('./app/routes/list.routes');
+const cardRouter = require('./app/routes/card.routes');
 
 const app = express();
 
@@ -34,7 +36,9 @@ app.get('/', (req, res) => {
   res.json({ message: 'welcome to taggle.' });
 });
 app.use('/users', usersRouter);
-app.use('/tags', tagsRouter);
+app.use('/boards', boardRouter);
+app.use('/lists', listRouter);
+app.use('/cards', cardRouter);
 
 // listen
 const PORT = process.env.PORT || 4500;
