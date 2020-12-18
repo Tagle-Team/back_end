@@ -4,8 +4,9 @@ const {generateExampleCards, getRandomEmoji} = require('../helpers');
 const shortid = require('shortid');
 
 exports.createBoard = (req, res) => {
+  const {boardTitle} = req.body;
   const newBoard = new Board();
-  newBoard.title = req.body;
+  newBoard.title = boardTitle;
   newBoard.lists = [];
   newBoard.save((err, Board) => {
     if (err) {
@@ -66,8 +67,12 @@ exports.reorderBoard = (req, res) => {
 
 exports.example = (req, res) => {
   const exampleCards = generateExampleCards();
+  const boardId = shortid.generate();
+  console.log(boardId);
   const newBoard = new Board();
-  newBoard.title = `Example Board ${getRandomEmoji()}`;
+  const boardTitle = `Example Board ${getRandomEmoji()}`
+  newBoard._id = boardId;
+  newBoard.title = boardTitle;
   newBoard.lists = [
     {
       title: 'Todo',
@@ -83,14 +88,18 @@ exports.example = (req, res) => {
     }
   ];
 
-  newBoard.save((err, Board) => {
+  newBoard.save((err, obj) => {
     if (err) {
       return res.status(400).send({
         message: 'Failed to add board. (' + err + ')',
       });
     } else {
-      return res.send({
-        message: 'Board added successfully.',
+      const newExampleBoard = obj;
+      res.send({
+        boardId,
+        boardTitle,
+        lists: newExampleBoard.lists,
+        cards: exampleCards.flat(Infinity)
       });
     }
   });

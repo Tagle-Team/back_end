@@ -1,5 +1,10 @@
+const { Schema } = require('mongoose');
+
 module.exports = (mongoose) => {
   let boardSchema = mongoose.Schema({
+    _id: {
+      type: Schema.Types.String,
+    },
     title: {
       type: String,
       trim: true,
