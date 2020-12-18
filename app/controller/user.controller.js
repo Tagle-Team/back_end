@@ -1,28 +1,25 @@
 const db = require('../models');
 const User = db.user;
 
-exports.login = (req, res) => {
-  User.findOne({ email: req.body.email }, function (err, user) {
-    if (user === null) {
-      return res.status(400).send({
-        message: 'User not found.',
-      });
-    } else {
-      if (!user.validPassword(req.body.password)) {
-        return res.status(400).send({
-          message: 'Wrong Password',
-        });
-      }
+exports.login = async (req, res) => {
+  const { userId, password: inputPassword } = req.body;
+  let result = false;
+  let userInfo = {};
 
+  await User.findOne({ userId }, (err, user) => {
+    if (user !== null && user.validPassword(inputPassword)) {
+      const { userName, email } = user.toJSON();
+      result = true;
+      userInfo = {
+        userName,
+        email,
+      };
       const token = user.generateJWT();
-      res.header('auth-token', token).json({
-        error: null,
-        data: {
-          token,
-        },
-      });
+      res.cookie('token', token, { httpOnly: true });
     }
   });
+
+  return res.send({ result, userInfo });
 };
 
 exports.signup = (req, res) => {
