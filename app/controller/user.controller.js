@@ -22,6 +22,14 @@ exports.login = async (req, res) => {
   return res.send({ result, userInfo });
 };
 
+exports.signOut = (req, res, next) => {
+  res.locals.jwtPayload = null;
+  res.cookie('token', null);
+  res.status(204);
+
+  return res.send();
+};
+
 exports.signup = (req, res) => {
   const { filename } = req.file;
   const newUser = new User();

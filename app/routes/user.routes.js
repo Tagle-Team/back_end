@@ -4,7 +4,7 @@ const {
   signup,
   confirmId,
   login,
-  uploadAvatar,
+  signOut,
 } = require('../controller/user.controller');
 // const { authMiddleware } = require('../middlewares/auth');
 
@@ -25,6 +25,7 @@ router.get('/', function (req, res, next) {
   res.send('respond with a resource');
 });
 router.post('/login', login);
+router.post('/signout', signOut);
 router.get('/confirmId', confirmId);
 router.post('/signup', upload.single('avatar'), signup);
 // router.use('/', authMiddleware);
