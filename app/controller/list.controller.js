@@ -43,10 +43,10 @@ exports.reorderList = (req, res) => {
     .findOneAndUpdate(
       {_id: boardId, 'lists._id': sourceId},
       {$pull: {'lists.$.cards': {_id: cardId}}},
-      {projection: {'lists.$.cards': true}}
+      // {projection: {'lists.$.cards': true}}
     )
-    .then(({value}) => {
-      const card = value.lists[0].cards[sourceIndex];
+    .then((obj) => {
+      const card = obj.lists[0].cards[sourceIndex];
       Board.updateOne(
         {_id: boardId, 'lists._id': destinationId},
         {
@@ -55,7 +55,7 @@ exports.reorderList = (req, res) => {
           }
         }
       );
-      res.send({value});
+      res.send({obj});
     })
     .catch((error) => {
       console.error(error);

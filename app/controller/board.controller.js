@@ -40,21 +40,46 @@ exports.deleteBoard = (req, res) => {
 
 exports.reorderBoard = (req, res) => {
   const {listId, sourceId, sourceIndex, destinationIndex} = req.body;
+  let destList = [];
+  console.log('++++++++++++++', req.body);
 
-  Board.findOneAndUpdate({
-    _id: sourceId
-  }, {
-    $pull: {lists: {_id: listId}}
-  })
-    .then(result => {
+  Board.find(
+    { _id: sourceId },
+    { lists: 1 }
+  ).then((result) => {
+    console.log('result', result[0]);
+    let tmpList = result[0].lists[sourceIndex];
+    result[0].lists[sourceIndex] = result[0].lists[destinationIndex];
+    result[0].lists[destinationIndex] = tmpList;
+
+    Board.update({ _id: result[0]._id }, { $set: { lists: result[0].lists } })
+      .then(() => {
+        return res.send({ result });
+      })
+      .catch((err) => {
+        console.error(err);
+        return res.send({
+          message: 'Fail'
+        });
+      });
+  });
+
+  /*Board.findOneAndUpdate(
+      { _id: sourceId },
+      { $pull: {lists: {_id: listId}} }
+    ).then((result) => {
       const list = result.lists[sourceIndex];
+      destList = result.lists[destinationIndex];
+      console.log('sourceList------------->', list);
+      console.log('destList------------->', destList);
+
       Board.updateOne(
         {_id: sourceId}
       ), {
         $push: {
           lists: {$each: [list], $position: destinationIndex}
         }
-      }
+      };
       return res.send({ result });
     })
     .catch(err => {
@@ -62,7 +87,7 @@ exports.reorderBoard = (req, res) => {
       return res.send({
         message: 'Fail'
       });
-    });
+    });*/
 }
 
 exports.example = (req, res) => {
@@ -75,15 +100,18 @@ exports.example = (req, res) => {
   newBoard.title = boardTitle;
   newBoard.lists = [
     {
-      title: 'Todo',
+      _id: shortid.generate(),
+      title: 'Dev',
       cards: exampleCards[0]
     },
     {
-      title: 'In Progress',
+      _id: shortid.generate(),
+      title: 'Shopping',
       cards: exampleCards[1]
     },
     {
-      title: 'Done',
+      _id: shortid.generate(),
+      title: 'Bookmark',
       cards: exampleCards[2]
     }
   ];

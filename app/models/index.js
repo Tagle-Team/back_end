@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 
 mongoose.Promise = global.Promise;
 mongoose.set('debug', true);
+mongoose.set('useFindAndModify', false);
 
 const db = {};
 db.mongoose = mongoose;
