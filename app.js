@@ -1,6 +1,7 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
+const { jwtSecret } = require('./app/config');
 const usersRouter = require('./app/routes/user.routes');
 const boardRouter = require('./app/routes/board.routes');
 const listRouter = require('./app/routes/list.routes');
@@ -11,6 +12,8 @@ const app = express();
 const corsOptions = {
   origin: 'http://localhost:5000',
 };
+
+app.set('jwt-secret', jwtSecret);
 
 // middleware
 app.use(cors(corsOptions));

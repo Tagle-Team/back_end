@@ -26,11 +26,13 @@ exports.login = (req, res) => {
 };
 
 exports.signup = (req, res) => {
+  const { filename } = req.file;
   const newUser = new User();
   newUser.userId = req.body.userId;
   newUser.userName = req.body.userName;
   newUser.email = req.body.email;
   newUser.setPassword(req.body.password);
+  newUser.image = filename;
 
   newUser.save((err, User) => {
     if (err) {
@@ -58,6 +60,17 @@ exports.confirmId = async (req, res) => {
     .catch((error) => {
       console.log(error);
     });
+
+  return res.send({ result });
+};
+
+exports.uploadAvatar = (req, res) => {
+  const { file } = req;
+  let result = false;
+
+  if (!file || Object.keys(file).length === 0) {
+    return res.status(400).send('No files were uploaded.');
+  }
 
   return res.send({ result });
 };
