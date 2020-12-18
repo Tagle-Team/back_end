@@ -1,6 +1,24 @@
 const express = require('express');
 const router = express.Router();
-const { signup, confirmId, login } = require('../controller/user.controller');
+const {
+  signup,
+  confirmId,
+  login,
+  uploadAvatar,
+} = require('../controller/user.controller');
+// const { authMiddleware } = require('../middlewares/auth');
+
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'uploads/avatar');
+  },
+  filename: (req, file, cb) => {
+    cb(null, req.body.userId + '_' + file.originalname);
+  },
+});
+const upload = multer({ storage: storage });
 
 /* GET users listing. */
 router.get('/', function (req, res, next) {
@@ -8,6 +26,7 @@ router.get('/', function (req, res, next) {
 });
 router.post('/login', login);
 router.get('/confirmId', confirmId);
-router.post('/signup', signup);
+router.post('/signup', upload.single('avatar'), signup);
+// router.use('/', authMiddleware);
 
 module.exports = router;
