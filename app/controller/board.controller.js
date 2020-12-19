@@ -95,7 +95,7 @@ exports.example = (req, res) => {
   const boardId = shortid.generate();
   console.log(boardId);
   const newBoard = new Board();
-  const boardTitle = `Example Board ${getRandomEmoji()}`
+  const boardTitle = 'Tag Board'
   newBoard._id = boardId;
   newBoard.title = boardTitle;
   newBoard.lists = [
@@ -130,5 +130,33 @@ exports.example = (req, res) => {
         cards: exampleCards.flat(Infinity)
       });
     }
+  });
+}
+
+exports.getBoard = (req, res) => {
+  Board.find(
+    { title: 'Tag Board' },
+    { _id: 1, lists: 1, title: 1 }
+  ).then((result) => {
+    let flatCards = [];
+    for (let i = 0; i < result[0].lists.length; i++) {
+      let listObj = result[0].lists[i];
+      for (let j = 0; j < listObj.cards.length; j++) {
+        let cardObj = listObj.cards[j];
+        flatCards = flatCards.concat(cardObj);
+      }
+    }
+
+    return res.send({
+      boardId: result[0]._id,
+      boardTitle: result[0].title,
+      lists: result[0].lists,
+      cards: flatCards.flat(Infinity)
+    });
+  }).catch((err) => {
+    console.error(err);
+    return res.send({
+      message: 'Fail'
+    });
   });
 }
