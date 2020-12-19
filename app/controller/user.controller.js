@@ -1,6 +1,5 @@
 const db = require('../models');
 const User = db.user;
-const { avatarMulter } = require('../middlewares/uploadFile');
 const fs = require('fs');
 
 exports.login = async (req, res) => {
