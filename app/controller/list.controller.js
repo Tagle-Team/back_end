@@ -39,14 +39,42 @@ exports.deleteList = (req, res) => {
 exports.reorderList = (req, res) => {
   const {cardId, sourceId, destinationId, sourceIndex, destinationIndex, boardId} = req.body;
 
+  console.log('-------->', cardId, sourceId, destinationId, sourceIndex, destinationIndex, boardId);
+
   Board
-    .findOneAndUpdate(
-      {_id: boardId, 'lists._id': sourceId},
-      {$pull: {'lists.$.cards': {_id: cardId}}},
-      // {projection: {'lists.$.cards': true}}
+    .findOne(
+      {_id: boardId},
+      {_id: 1, lists: 1},
     )
     .then((obj) => {
-      const card = obj.lists[0].cards[sourceIndex];
+      let sourceCard = {};
+      console.log('obj--------->', obj);
+
+      for (let i = 0; i < obj.lists.length; i++) {
+        if (obj.lists[i]._id === sourceId) {
+          Object.assign(sourceCard, obj.lists[i].cards[sourceIndex]);
+          obj.lists[i].cards.splice(sourceIndex, 1);
+        }
+      }
+
+      for (let i = 0; i < obj.lists.length; i++) {
+        if (obj.lists[i]._id === destinationId)
+          obj.lists[i].cards.splice(destinationIndex, 0, sourceCard);
+      }
+
+      Board.update({ _id: obj._id }, { $set: { lists: obj.lists } })
+        .then(() => {
+          return res.send({obj});
+        })
+        .catch((err) => {
+          console.log(err);
+          return res.send({
+            message: 'Fail'
+          });
+        });
+
+      /*const card = obj.lists[0].cards[sourceIndex];
+      console.log('card---------->', card);
       Board.updateOne(
         {_id: boardId, 'lists._id': destinationId},
         {
@@ -54,8 +82,10 @@ exports.reorderList = (req, res) => {
             'lists.$.cards': {$each: [card], $position: destinationIndex}
           }
         }
-      );
-      res.send({obj});
+      ).then(() => {
+        console.log('update complete');
+      });
+      res.send({obj});*/
     })
     .catch((error) => {
       console.error(error);
