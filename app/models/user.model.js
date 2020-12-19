@@ -81,6 +81,7 @@ module.exports = (mongoose) => {
     return jwt.sign(
       {
         id: this._id,
+        userId: this.userId,
         userName: this.userName,
         exp: parseInt(exp.getTime() / 1000),
       },
