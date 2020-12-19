@@ -8,11 +8,12 @@ exports.login = async (req, res) => {
 
   await User.findOne({ userId }, (err, user) => {
     if (user !== null && user.validPassword(inputPassword)) {
-      const { userName, email } = user.toJSON();
+      const { userName, email, image } = user.toJSON();
       result = true;
       userInfo = {
         userName,
         email,
+        image,
       };
       const token = user.generateJWT();
       res.cookie('token', token, { httpOnly: true });

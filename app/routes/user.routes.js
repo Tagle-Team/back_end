@@ -6,7 +6,7 @@ const {
   login,
   signOut,
 } = require('../controller/user.controller');
-// const { authMiddleware } = require('../middlewares/auth');
+const { authMiddleware } = require('../middlewares/auth');
 
 const multer = require('multer');
 
@@ -28,6 +28,6 @@ router.post('/login', login);
 router.post('/signout', signOut);
 router.get('/confirmId', confirmId);
 router.post('/signup', upload.single('avatar'), signup);
-// router.use('/', authMiddleware);
+router.use('/', authMiddleware);
 
 module.exports = router;
