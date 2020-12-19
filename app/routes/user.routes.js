@@ -6,6 +6,7 @@ const {
   login,
   signOut,
   confirmUser,
+  editUser,
 } = require('../controller/user.controller');
 const { authMiddleware } = require('../middlewares/auth');
 
@@ -16,7 +17,10 @@ const storage = multer.diskStorage({
     cb(null, 'uploads/avatar');
   },
   filename: (req, file, cb) => {
-    cb(null, req.body.userId + '_' + file.originalname);
+    cb(
+      null,
+      new Date().valueOf() + '_' + req.body.userId + '_' + file.originalname
+    );
   },
 });
 const upload = multer({ storage: storage });
@@ -31,5 +35,6 @@ router.get('/confirmId', confirmId);
 router.post('/signup', upload.single('avatar'), signup);
 router.use('/', authMiddleware);
 router.post('/confirm', confirmUser);
+router.post('/edit', upload.single('avatar'), editUser);
 
 module.exports = router;

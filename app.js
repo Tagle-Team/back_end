@@ -14,6 +14,7 @@ const corsOptions = {
 };
 
 app.set('jwt-secret', secret);
+app.set('static', __dirname);
 app.use('/static', express.static(__dirname + '/uploads'));
 
 // middleware

@@ -1,5 +1,7 @@
 const db = require('../models');
 const User = db.user;
+const { avatarMulter } = require('../middlewares/uploadFile');
+const fs = require('fs');
 
 exports.login = async (req, res) => {
   const { userId, password: inputPassword } = req.body;
@@ -107,4 +109,60 @@ exports.confirmUser = async (req, res) => {
   }
 
   return res.send({ result, message, userInfo });
+};
+
+exports.editUser = async (req, res) => {
+  const { file } = req;
+  const {
+    userId,
+    userName,
+    email,
+    password,
+    isChangeAvatar = false,
+    image,
+  } = req.body;
+  let result = false;
+  let userInfo = {};
+
+  const newUser = await User.findOne({ userId });
+  newUser.userId = userId;
+  newUser.userName = userName;
+  newUser.email = email;
+  newUser.setPassword(password);
+
+  if (isChangeAvatar === 'true') {
+    try {
+      const staticPath = req.app.get('static');
+      const path = `${staticPath}/uploads/avatar/${image}`;
+      fs.unlink(path, (err) => {
+        if (err) {
+          console.error(err);
+        }
+
+        console.log('avatar deleted');
+      });
+    } catch (err) {
+      console.error(err);
+    }
+  }
+
+  if (!!file && file.filename) {
+    newUser.image = file.filename;
+  }
+
+  const user = await newUser.save();
+
+  if (!!user) {
+    result = true;
+    const { userId, userName, email, image, admin } = user;
+
+    userInfo = {
+      userId,
+      userName,
+      email,
+      image,
+      admin,
+    };
+  }
+  return res.send({ result, userInfo });
 };
