@@ -80,3 +80,31 @@ exports.uploadAvatar = (req, res) => {
 
   return res.send({ result });
 };
+
+exports.confirmUser = async (req, res) => {
+  const { password } = req.body;
+  const { userId } = res.locals.jwtPayload;
+  let result = false;
+  let message = null;
+  let userInfo = {};
+
+  try {
+    const user = await User.findOne({ userId });
+    if (user.validPassword(password)) {
+      const { userId, userName, email, image, admin } = user.toJSON();
+      result = true;
+
+      userInfo = {
+        userId,
+        userName,
+        email,
+        image,
+        admin,
+      };
+    }
+  } catch (err) {
+    message = err;
+  }
+
+  return res.send({ result, message, userInfo });
+};
