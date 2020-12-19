@@ -5,6 +5,7 @@ const {
   confirmId,
   login,
   signOut,
+  confirmUser,
 } = require('../controller/user.controller');
 const { authMiddleware } = require('../middlewares/auth');
 
@@ -29,5 +30,6 @@ router.post('/signout', signOut);
 router.get('/confirmId', confirmId);
 router.post('/signup', upload.single('avatar'), signup);
 router.use('/', authMiddleware);
+router.post('/confirm', confirmUser);
 
 module.exports = router;
