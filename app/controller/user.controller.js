@@ -137,6 +137,8 @@ exports.editUser = async (req, res) => {
 
   if (!!file && file.filename) {
     newUser.image = file.filename;
+  } else if (isChangeAvatar) {
+    newUser.image = null;
   }
 
   const user = await newUser.save();
