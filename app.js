@@ -6,6 +6,7 @@ const usersRouter = require('./app/routes/user.routes');
 const boardRouter = require('./app/routes/board.routes');
 const listRouter = require('./app/routes/list.routes');
 const cardRouter = require('./app/routes/card.routes');
+const postRouter = require('./app/routes/post.routes');
 
 const app = express();
 
@@ -50,6 +51,7 @@ app.use('/users', usersRouter);
 app.use('/boards', boardRouter);
 app.use('/lists', listRouter);
 app.use('/cards', cardRouter);
+app.use('/post', postRouter);
 
 /* listen */
 const PORT = process.env.PORT || 4500;
