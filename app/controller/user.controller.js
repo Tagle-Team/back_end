@@ -71,17 +71,6 @@ exports.confirmId = async (req, res) => {
   return res.send({ result });
 };
 
-exports.uploadAvatar = (req, res) => {
-  const { file } = req;
-  let result = false;
-
-  if (!file || Object.keys(file).length === 0) {
-    return res.status(400).send('No files were uploaded.');
-  }
-
-  return res.send({ result });
-};
-
 exports.confirmUser = async (req, res) => {
   const { password } = req.body;
   const { userId } = res.locals.jwtPayload;
@@ -128,6 +117,7 @@ exports.editUser = async (req, res) => {
   newUser.userName = userName;
   newUser.email = email;
   newUser.setPassword(password);
+  newUser.updateAt = new Date();
 
   if (isChangeAvatar === 'true') {
     try {
