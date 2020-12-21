@@ -1,10 +1,9 @@
-// const uniqueValidator = require('mongoose-unique-validator');
 const crypto = require('crypto');
 const jwt = require('jsonwebtoken');
 const secret = require('../config').secret;
 
 module.exports = (mongoose) => {
-  let userSchema = mongoose.Schema({
+  const userSchema = mongoose.Schema({
     userId: {
       type: String,
       trim: true,
@@ -24,7 +23,6 @@ module.exports = (mongoose) => {
       match: [/\S+@\S+\.\S+/, 'is invalid'],
       index: true,
     },
-    bio: String,
     image: String,
     password: {
       type: String,
@@ -45,7 +43,6 @@ module.exports = (mongoose) => {
     },
   });
 
-  // userSchema.plugin(uniqueValidator, {message: 'is already taken.'});
   userSchema.method('toJSON', function () {
     const { __v, _id, ...object } = this.toObject();
     object.id = _id;
@@ -94,7 +91,6 @@ module.exports = (mongoose) => {
       userName: this.userName,
       email: this.email,
       token: this.generateJWT(),
-      bio: this.bio,
       image: this.image,
     };
   };
