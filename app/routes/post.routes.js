@@ -26,8 +26,8 @@ router.get('/', getPosts);
 /* 공개 여부 변경 api */
 router.put('/private', updatePrivate);
 /* 게시글 수정 */
-router.put('/:seq', updatePost);
+router.put('/:id', updatePost);
 /* 게시글 삭제 */
-router.delete('/:seq', deletePost);
+router.delete('/:id', deletePost);
 
 module.exports = router;

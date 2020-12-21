@@ -9,23 +9,23 @@ exports.login = async (req, res) => {
   let userInfo = {};
 
   /* userId로 회원 찾고 password 일치하는지 확인 */
-  await User.findOne({ userId }, (err, user) => {
-    if (user !== null && user.validPassword(inputPassword)) {
-      const { userName, email, image } = user.toJSON();
-      result = true;
-      userInfo = {
-        userName,
-        email,
-        image,
-      };
-      /* 일치하는 경우 jwt를 header에 set-cookie 로 설정 */
-      /* header에 set-cookie 로 설정 할 경우 해당 api에 발급 받은 토큰 값을
-       Cookie 값으로 알아서 브라우저가 담아서 보냄  */
-      const token = user.generateJWT();
-      /* httpOnly 옵션으로 javascript 에서 토큰에 접근 할 수 없도록 설정함 */
-      res.cookie('token', token, { httpOnly: true });
-    }
-  });
+  const user = await User.findOne({ userId });
+
+  if (user !== null && user.validPassword(inputPassword)) {
+    const { userName, email, image } = user.toJSON();
+    result = true;
+    userInfo = {
+      userName,
+      email,
+      image,
+    };
+    /* 일치하는 경우 jwt를 header에 set-cookie 로 설정 */
+    /* header에 set-cookie 로 설정 할 경우 해당 api에 발급 받은 토큰 값을
+     Cookie 값으로 알아서 브라우저가 담아서 보냄  */
+    const token = user.generateJWT();
+    /* httpOnly 옵션으로 javascript 에서 토큰에 접근 할 수 없도록 설정함 */
+    res.cookie('token', token, { httpOnly: true });
+  }
 
   return res.send({ result, userInfo });
 };

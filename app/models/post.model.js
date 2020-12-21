@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const dbConfig = require('../config/db.config.js');
+// const dbConfig = require('../config/db.config.js');
 
 /* 게시글 시퀀스 자동증가 기능 추가 */
-var autoIncrement = require('mongoose-auto-increment');
-var connection = mongoose.createConnection(dbConfig.url);
-autoIncrement.initialize(connection);
+// var autoIncrement = require('mongoose-auto-increment');
+// var connection = mongoose.createConnection(dbConfig.url);
+// autoIncrement.initialize(connection);
 
 /* 로그인한 사용자 object id  외래키 지정시 유효성 확이하기 위한 helper import */
 const FKHelper = require('../helpers/foreignKey.helper');
 
 /* 스키마 생성 */
 const PostSchema = new Schema({
-  seq: Number,
+  // seq: Number,
   tags: {
     type: [String],
     trim: true,
@@ -55,12 +55,12 @@ const PostSchema = new Schema({
 });
 
 /* Post 컬랙션에 seq 값 자동증가 설정  */
-PostSchema.plugin(autoIncrement.plugin, {
-  model: 'Post',
-  field: 'seq',
-  startAt: 1, //시작
-  increment: 1, // 증가
-});
+// PostSchema.plugin(autoIncrement.plugin, {
+//   model: 'Post',
+//   field: 'seq',
+//   startAt: 1, //시작
+//   increment: 1, // 증가
+// });
 
 const Post = mongoose.model('Post', PostSchema);
 
